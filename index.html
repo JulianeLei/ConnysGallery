@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Conny Leibhammer — Malerei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: #FAFAF8; font-family: 'DM Sans', sans-serif; color: #1A1A18; overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #F0F0EC; }
+  ::-webkit-scrollbar-thumb { background: #C8C8C2; }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50%       { transform: scale(1.3); opacity: 1; }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideDown {
+    from { opacity: 0; max-height: 0; }
+    to   { opacity: 1; max-height: 600px; }
+  }
+
+  .sl { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #AAA; font-family: 'DM Sans', sans-serif; }
+
+  .nav-link { font-size: 11px; letter-spacing: 2px; color: #888; text-transform: uppercase; text-decoration: none;
+    transition: color 0.2s; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 0; }
+  .nav-link:hover { color: #1A1A18; }
+  .nav-link.active { color: #1A1A18; border-bottom: 1px solid #1A1A18; padding-bottom: 2px; }
+
+  .work-card { cursor: pointer; background: #EEECEA; overflow: hidden; position: relative; }
+  .work-card img { width: 100%; display: block; object-fit: cover; transition: transform 0.5s ease; }
+  .work-card:hover img { transform: scale(1.03); }
+  .work-card .card-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px;
+    background: linear-gradient(to top, rgba(26,26,24,0.7) 0%, transparent 100%); opacity: 0; transition: opacity 0.3s; }
+  .work-card:hover .card-overlay { opacity: 1; }
+  @media (hover: none) {
+    .work-card .card-overlay { opacity: 1; }
+  }
+
+  .placeholder-card { background: #F0EDE6; border: 1.5px dashed #D4D0C8; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px; aspect-ratio: 3/4; color: #BBB; }
+
+  /* Mobile menu */
+  .mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(250,250,248,0.98);
+    z-index: 200; flex-direction: column; align-items: center; justify-content: center; gap: 40px;
+    backdrop-filter: blur(16px); animation: fadeIn 0.25s ease; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu .nav-link { font-size: 14px; letter-spacing: 4px; color: #1A1A18; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ── Responsive hook ───────────────────────────────────────────────────────────
+function useMobile() {
+  const [mobile, setMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < 768);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+  return mobile;
+}
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+const HOTSPOTS = [
+  { id:"h1", x:72, y:18, label:"Neon-Explosion",  desc:"Zinoberorange und Neonmagenta treffen aufeinander — aufgesprüht und mit Brennspiritus verwischt. Diese Energie entstand in einer einzigen Sitzung.", detail:"uploads/PHOTO-2026-04-25-10-48-13 3.jpg", color:"#FF4500" },
+  { id:"h2", x:20, y:30, label:"Grüne Wildnis",   desc:"Nachtleuchtgrün und Gelbgrün bilden ein organisches Dickicht. Darunter liegt eine Schicht Marmormehl, die die Farbe aufreißt.", detail:"uploads/PHOTO-2026-04-25-10-48-13 2.jpg", color:"#39FF14" },
+  { id:"h3", x:50, y:62, label:"Tiefenstruktur",  desc:"Violett und Türkisblau bilden rechteckige Blöcke. Gips und Strukturpaste schaffen die reliefhafte Oberfläche darunter.", detail:"uploads/PHOTO-2026-04-25-10-48-13 4.jpg", color:"#8B00FF" },
+  { id:"h4", x:82, y:55, label:"Warme Glut",      desc:"Hier treffen Reflexrosa und Zinoberorange auf weiße Struktur. Die Farben wurden nass in nass übereinander gezogen.", detail:"uploads/PHOTO-2026-04-25-10-48-09.jpg", color:"#FF69B4" },
+  { id:"h5", x:38, y:40, label:"Weiße Stille",    desc:"Mischweiß und Elfenbein decken frühere Schichten ab. Darunter schlummert die gesamte Geschichte des Bildes — sichtbar in den Rissen.", detail:"uploads/PHOTO-2026-04-25-10-48-13 5.jpg", color:"#DDD8CC" },
+];
+
+const PROCESS_STEPS = [
+  { img:"uploads/PHOTO-2026-04-25-10-48-10 3.jpg", label:"Erster Aufbau", date:"März 2025",          desc:"Auf dem bespannten Keilrahmen (Henry XL, 100 × 140 cm) entsteht die erste Struktur: Marmormehl, Gips und Strukturpaste werden aufgetragen. Die Leinwand bekommt ihr Relief." },
+  { img:"uploads/PHOTO-2026-04-25-10-48-10 2.jpg", label:"Erste Farbe",   date:"Frühjahr 2025",      desc:"Die ersten Acrylfarben brechen durch — Reflexrosa, Zinoberorange, Türkisblau. Farbdosen und Sprühfarben werden eingesetzt, um große Flächen zu setzen." },
+  { img:"uploads/PHOTO-2026-04-25-10-54-07.jpg",   label:"Energie",       date:"Sommer 2025",        desc:"Das Bild gewinnt Tiefe und Spannung. Neue Schichten werden aufgetragen, überarbeitet, zugedeckt. Neonmagenta und Gelbgrün treten in einen Dialog." },
+  { img:"uploads/PHOTO-2026-04-25-10-54-08 2.jpg", label:"Entspannung",   date:"Herbst/Winter 2025", desc:"Weiße Schichten legen sich über die Energie. Ein bewusstes Zurücktreten. Pastellfixativ versiegelt einzelne Zonen, Brennspiritus öffnet andere." },
+  { img:"uploads/PHOTO-2026-04-25-10-54-09.jpg",   label:"Vollendung",    date:"April 2026",         desc:"Nach über einem Jahr ist das Bild vollendet. Energie und Entspannung — zwei Kräfte, die im Gleichgewicht zueinander stehen." },
+];
+
+const COLORS_ACRYL = [
+  {name:"Reflexrosa",hex:"#FF69B4"},{name:"Reflexgrün",hex:"#39FF14"},{name:"Reflexgelb",hex:"#FFFF00"},
+  {name:"Mischweiß",hex:"#F5F5EE"},{name:"Elfenbein",hex:"#FFF8DC"},{name:"Nachtleuchtgrün",hex:"#00FF41"},
+  {name:"Rotviolett",hex:"#C71585"},{name:"Türkisblau",hex:"#00CED1"},{name:"Cyano Blau",hex:"#00B7EB"},
+  {name:"Zinoberorange",hex:"#FF4500"},{name:"Gelbgrün",hex:"#9ACD32"},{name:"Mint",hex:"#98FF98"},
+  {name:"Primärrot",hex:"#FF0000"},{name:"Neonmagenta",hex:"#FF00FF"},{name:"Kohle",hex:"#36454F"},
+];
+const COLORS_PIGM  = [{name:"Coelinblau",hex:"#6699CC"},{name:"Disziplin-Orange",hex:"#FF8C00"},{name:"Violett",hex:"#8B008B"}];
+const COLORS_SPRAY = [{name:"Gelb",hex:"#FFD700"},{name:"Silber",hex:"#C0C0C0"},{name:"Effekt",hex:"#E8E8E0"}];
+const MATERIALS    = ["Marmormehl","Strukturpaste","Gips","Acrylbinder","Pastellfixativ","Brennspiritus"];
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+function Nav({ scrolled, page, setPage }) {
+  const mobile = useMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const scrollTo = (id) => {
+    setMenuOpen(false);
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+    }, menuOpen ? 300 : 0);
+  };
+
+  const goHome = () => { setMenuOpen(false); setPage("home"); window.scrollTo({top:0,behavior:"smooth"}); };
+
+  return (
+    <>
+      <nav style={{
+        position:"fixed", top:0, left:0, right:0, zIndex:100,
+        display:"flex", justifyContent:"space-between", alignItems:"center",
+        padding: mobile ? "18px 24px" : "22px 64px",
+        background: scrolled||menuOpen ? "rgba(250,250,248,0.97)" : "transparent",
+        borderBottom: scrolled ? "1px solid #E8E8E4" : "1px solid transparent",
+        backdropFilter: scrolled||menuOpen ? "blur(12px)" : "none",
+        transition: "all 0.4s ease",
+      }}>
+        <button className="nav-link" onClick={goHome}
+          style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?16:20,letterSpacing:4,fontWeight:300,color:"#1A1A18",textTransform:"none"}}>
+          CONNY LEIBHAMMER
+        </button>
+
+        {mobile ? (
+          /* Hamburger */
+          <button onClick={()=>setMenuOpen(o=>!o)}
+            style={{background:"none",border:"none",cursor:"pointer",padding:8,display:"flex",flexDirection:"column",gap:5,zIndex:201}}>
+            <span style={{display:"block",width:22,height:1.5,background:"#1A1A18",transition:"all 0.3s",
+              transform:menuOpen?"rotate(45deg) translate(4.5px,4.5px)":"none"}} />
+            <span style={{display:"block",width:22,height:1.5,background:"#1A1A18",transition:"all 0.3s",
+              opacity:menuOpen?0:1}} />
+            <span style={{display:"block",width:22,height:1.5,background:"#1A1A18",transition:"all 0.3s",
+              transform:menuOpen?"rotate(-45deg) translate(4.5px,-4.5px)":"none"}} />
+          </button>
+        ) : (
+          <div style={{display:"flex",gap:44,alignItems:"center"}}>
+            <button className={"nav-link"+(page==="home"?" active":"")} onClick={()=>{ setPage("home"); setTimeout(()=>scrollTo("werke"),50); }}>Werke</button>
+            <button className="nav-link" onClick={()=>scrollTo("ueber")}>Über mich</button>
+            <button className="nav-link" onClick={()=>scrollTo("kontakt")}>Kontakt</button>
+          </div>
+        )}
+      </nav>
+
+      {/* Mobile menu overlay */}
+      <div className={"mobile-menu"+(menuOpen?" open":"")}>
+        <button className="nav-link" onClick={()=>{ goHome(); setTimeout(()=>scrollTo("werke"),50); }}>Werke</button>
+        <button className="nav-link" onClick={()=>scrollTo("ueber")}>Über mich</button>
+        <button className="nav-link" onClick={()=>scrollTo("kontakt")}>Kontakt</button>
+      </div>
+    </>
+  );
+}
+
+// ── Artist Hero ───────────────────────────────────────────────────────────────
+function ArtistHero() {
+  const mobile = useMobile();
+  return (
+    <section id="hero" style={{
+      minHeight:"100vh",
+      display:"grid",
+      gridTemplateColumns: mobile ? "1fr" : "1fr 1fr",
+      gridTemplateRows: mobile ? "55vw 1fr" : undefined,
+      paddingTop: mobile ? 64 : 80,
+    }}>
+      {mobile && (
+        <div style={{position:"relative",overflow:"hidden",background:"#E8E4DC"}}>
+          <img src="uploads/PHOTO-2026-04-25-10-54-32.jpg"
+            style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top",display:"block"}} />
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 60%,#FAFAF8 100%)"}} />
+        </div>
+      )}
+      <div style={{padding: mobile ? "32px 24px 56px" : "80px 72px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
+        <p className="sl" style={{marginBottom:mobile?18:28}}>Malerei · Acryl &amp; Mixed Media</p>
+        <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?52:68,fontWeight:300,lineHeight:0.95,color:"#1A1A18",marginBottom:mobile?20:32}}>
+          Conny<br /><em>Leibhammer</em>
+        </h1>
+        <div style={{width:48,height:1,background:"#C8C8C2",marginBottom:mobile?20:32}} />
+        <p style={{fontSize:mobile?14:15,color:"#666",lineHeight:1.85,maxWidth:400,fontWeight:300}}>
+          Ich male mit Energie — und mit der Bereitschaft, loszulassen. Jedes Werk entsteht in Schichten: Struktur, Farbe, Stille. Was bleibt, ist das Wesentliche.
+        </p>
+        {!mobile && (
+          <div style={{marginTop:48,display:"flex",alignItems:"center",gap:14}}>
+            <div style={{width:1,height:48,background:"#D4D0C8"}} />
+            <span style={{fontSize:10,letterSpacing:3,textTransform:"uppercase",color:"#BBB"}}>Werke entdecken</span>
+          </div>
+        )}
+      </div>
+      {!mobile && (
+        <div style={{position:"relative",overflow:"hidden",background:"#E8E4DC"}}>
+          <img src="uploads/PHOTO-2026-04-25-10-54-32.jpg"
+            style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center",display:"block"}} />
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to left,transparent 60%,#FAFAF8 100%)"}} />
+        </div>
+      )}
+    </section>
+  );
+}
+
+// ── Werke ─────────────────────────────────────────────────────────────────────
+function Werke({ onSelectWork }) {
+  const mobile = useMobile();
+  const px = mobile ? "24px" : "64px";
+  return (
+    <section id="werke" style={{padding: mobile ? "64px 0 80px" : "100px 0 120px",background:"#FAFAF8"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:`0 ${px}`}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:mobile?36:56}}>
+          <div>
+            <p className="sl" style={{marginBottom:14}}>Portfolio</p>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?34:44,fontWeight:300,color:"#1A1A18"}}>Werke</h2>
+          </div>
+          <p style={{fontSize:11,color:"#BBB",letterSpacing:1}}>1 Werk</p>
+        </div>
+
+        <div style={{display:"grid",gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3,1fr)",gap:mobile?16:24}}>
+          <div className="work-card" onClick={onSelectWork}>
+            <img src="uploads/PHOTO-2026-04-25-10-54-08.jpg" style={{aspectRatio:"3/4"}} />
+            <div className="card-overlay">
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?15:20,fontStyle:"italic",color:"#FFF",marginBottom:4}}>Energie und Entspannung</p>
+              <p style={{fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.6)",textTransform:"uppercase"}}>2025–2026 · 100×140 cm</p>
+            </div>
+          </div>
+          <div className="placeholder-card">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+              <rect x="1" y="1" width="30" height="30" rx="2" stroke="#D4D0C8" strokeWidth="1.5" strokeDasharray="4 3"/>
+              <line x1="16" y1="9" x2="16" y2="23" stroke="#D4D0C8" strokeWidth="1.5"/>
+              <line x1="9" y1="16" x2="23" y2="16" stroke="#D4D0C8" strokeWidth="1.5"/>
+            </svg>
+            <p style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"#C8C4BC"}}>Kommt bald</p>
+          </div>
+          {!mobile && (
+            <div className="placeholder-card">
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                <rect x="1" y="1" width="30" height="30" rx="2" stroke="#D4D0C8" strokeWidth="1.5" strokeDasharray="4 3"/>
+                <line x1="16" y1="9" x2="16" y2="23" stroke="#D4D0C8" strokeWidth="1.5"/>
+                <line x1="9" y1="16" x2="23" y2="16" stroke="#D4D0C8" strokeWidth="1.5"/>
+              </svg>
+              <p style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"#C8C4BC"}}>Kommt bald</p>
+            </div>
+          )}
+        </div>
+
+        <div style={{marginTop:16}}>
+          <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?16:18,fontWeight:300,marginBottom:4}}>Energie und Entspannung</p>
+          <p style={{fontSize:11,color:"#AAA",letterSpacing:1}}>Acryl, Pigmente, Mixed Media · 2025–2026</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Explore ───────────────────────────────────────────────────────────────────
+function Explore() {
+  const mobile = useMobile();
+  const [active, setActive] = useState(null);
+  const activeHotspot = HOTSPOTS.find(h => h.id === active);
+  const detailRef = useRef(null);
+
+  const handleTap = (id) => {
+    if (mobile) {
+      setActive(prev => prev === id ? null : id);
+      setTimeout(() => { if (detailRef.current) { const y = detailRef.current.getBoundingClientRect().top + window.scrollY - 90; window.scrollTo({top:y,behavior:"smooth"}); }}, 100);
+    }
+  };
+
+  const px = mobile ? "24px" : "64px";
+
+  return (
+    <section id="explore" style={{background:"#F2F0EA",padding: mobile ? "64px 0 80px" : "100px 0 120px"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:`0 ${px}`}}>
+        <div style={{marginBottom:mobile?36:60}}>
+          <p className="sl" style={{marginBottom:16}}>Das Werk erkunden</p>
+          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?30:44,fontWeight:300,color:"#1A1A18"}}>Jeder Pinselzug erzählt</h2>
+          <p style={{fontSize:13,color:"#888",marginTop:12,maxWidth:480,lineHeight:1.7}}>
+            {mobile ? "Tippen Sie auf einen Bereich im Bild, um Details zu entdecken." : "Fahren Sie mit der Maus über das Bild, um bestimmte Zonen zu erkunden."}
+          </p>
+        </div>
+
+        <div style={{display:"grid",gridTemplateColumns: mobile ? "1fr" : "1fr 400px",gap:mobile?32:40,alignItems:"start"}}>
+          {/* Painting */}
+          <div style={{position:"relative",overflow:"hidden",background:"#DDDBD4"}}>
+            <img src="uploads/PHOTO-2026-04-25-10-54-08.jpg" style={{width:"100%",display:"block",objectFit:"cover"}} />
+            <div style={{position:"absolute",inset:0,background:active?"rgba(0,0,0,0.18)":"transparent",transition:"background 0.4s",pointerEvents:"none"}} />
+            {HOTSPOTS.map(h=>(
+              <div key={h.id}
+                onMouseEnter={()=>!mobile&&setActive(h.id)}
+                onMouseLeave={()=>!mobile&&setActive(null)}
+                onClick={()=>handleTap(h.id)}
+                style={{position:"absolute",left:`${h.x}%`,top:`${h.y}%`,transform:"translate(-50%,-50%)",
+                  cursor:"crosshair",zIndex:10,touchAction:"manipulation"}}>
+                <div style={{position:"absolute",width:mobile?48:56,height:mobile?48:56,borderRadius:"50%",
+                  border:`2px solid ${active===h.id?h.color:"rgba(255,255,255,0.6)"}`,
+                  top:mobile?-24:-28,left:mobile?-24:-28,transition:"all 0.3s",
+                  transform:active===h.id?"scale(1.2)":"scale(1)",
+                  boxShadow:active===h.id?`0 0 24px ${h.color}88`:"none"}} />
+                <div style={{width:mobile?10:12,height:mobile?10:12,borderRadius:"50%",
+                  background:active===h.id?h.color:"rgba(255,255,255,0.9)",
+                  border:`2px solid ${active===h.id?h.color:"rgba(255,255,255,0.6)"}`,
+                  transform:"translate(-50%,-50%)",transition:"all 0.3s",
+                  animation:active!==h.id?"pulse 2.5s ease-in-out infinite":"none",
+                  boxShadow:active===h.id?`0 0 12px ${h.color}`:"0 2px 8px rgba(0,0,0,0.3)"}} />
+              </div>
+            ))}
+          </div>
+
+          {/* Detail panel */}
+          <div ref={detailRef} style={mobile ? {} : {position:"sticky",top:120}}>
+            {activeHotspot ? (
+              <div key={activeHotspot.id} style={{animation:"fadeIn 0.3s ease both"}}>
+                <div style={{overflow:"hidden",marginBottom:24,background:"#DDDBD4"}}>
+                  <img src={activeHotspot.detail}
+                    style={{width:"100%",aspectRatio:"4/3",objectFit:"cover",display:"block"}} />
+                </div>
+                <div style={{borderLeft:`3px solid ${activeHotspot.color}`,paddingLeft:20}}>
+                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?22:26,fontWeight:400,color:"#1A1A18",marginBottom:10}}>{activeHotspot.label}</p>
+                  <p style={{fontSize:13,color:"#666",lineHeight:1.7}}>{activeHotspot.desc}</p>
+                  {mobile && <button onClick={()=>setActive(null)} style={{marginTop:16,fontSize:10,letterSpacing:2,textTransform:"uppercase",color:"#AAA",background:"none",border:"none",cursor:"pointer",padding:0}}>Schließen</button>}
+                </div>
+              </div>
+            ) : (
+              <div style={{display:"flex",flexDirection:"column",gap:16,padding:mobile?"24px 20px":"40px 24px",border:"1px solid #E0DED8",textAlign:"center"}}>
+                <div style={{width:40,height:40,borderRadius:"50%",border:"1.5px solid #CCC",margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="3" fill="#CCC"/><circle cx="8" cy="8" r="6.5" stroke="#CCC" strokeWidth="1"/>
+                  </svg>
+                </div>
+                <p className="sl">{mobile?"Bereich antippen":"Hotspot auswählen"}</p>
+                <div style={{display:"flex",flexDirection:"column",gap:8,textAlign:"left"}}>
+                  {HOTSPOTS.map(h=>(
+                    <div key={h.id} style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer",padding:"8px 0",borderBottom:"1px solid #EAE8E2"}}
+                      onMouseEnter={()=>!mobile&&setActive(h.id)}
+                      onMouseLeave={()=>!mobile&&setActive(null)}
+                      onClick={()=>handleTap(h.id)}>
+                      <div style={{width:8,height:8,borderRadius:"50%",background:h.color,flexShrink:0}} />
+                      <span style={{fontSize:12,color:"#777"}}>{h.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Palette ───────────────────────────────────────────────────────────────────
+function Palette() {
+  const mobile = useMobile();
+  const [hovered, setHovered] = useState(null);
+  const [openGroup, setOpenGroup] = useState(null);
+  const allColors = [...COLORS_ACRYL,...COLORS_PIGM,...COLORS_SPRAY];
+  const px = mobile ? "24px" : "64px";
+
+  const ColorRow = ({c}) => (
+    <div onMouseEnter={()=>setHovered(c.name)} onMouseLeave={()=>setHovered(null)}
+      style={{display:"flex",alignItems:"center",gap:14,padding:"10px 0",borderBottom:"1px solid #ECEAE4",
+        opacity:hovered&&hovered!==c.name?0.3:1,transition:"opacity 0.2s",cursor:"default"}}>
+      <div style={{width:32,height:32,borderRadius:4,background:c.hex,border:"1px solid rgba(0,0,0,0.07)",flexShrink:0,
+        transition:"transform 0.2s,box-shadow 0.2s",
+        transform:hovered===c.name?"scale(1.15)":"scale(1)",
+        boxShadow:hovered===c.name?`0 4px 16px ${c.hex}66`:"none"}} />
+      <span style={{fontSize:13,color:"#444"}}>{c.name}</span>
+    </div>
+  );
+
+  // Mobile: accordion groups
+  const groups = [
+    { key:"acryl", label:"Acrylfarben", items:COLORS_ACRYL },
+    { key:"pigm",  label:"Pigmente",    items:COLORS_PIGM },
+    { key:"spray", label:"Sprühfarben", items:COLORS_SPRAY },
+    { key:"mat",   label:"Material",    items:MATERIALS.map(m=>({name:m,hex:null})) },
+  ];
+
+  return (
+    <section id="palette" style={{padding: mobile ? "64px 0 80px" : "100px 0 120px",background:"#FAFAF8"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:`0 ${px}`}}>
+        <div style={{marginBottom:mobile?36:60}}>
+          <p className="sl" style={{marginBottom:16}}>Materialien &amp; Farben</p>
+          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?30:44,fontWeight:300,color:"#1A1A18"}}>Die Palette</h2>
+        </div>
+
+        {mobile ? (
+          /* Accordion on mobile */
+          <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:32}}>
+            {groups.map(g=>(
+              <div key={g.key} style={{borderBottom:"1px solid #E8E4DC"}}>
+                <button onClick={()=>setOpenGroup(o=>o===g.key?null:g.key)}
+                  style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",
+                    padding:"18px 0",background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
+                  <span className="sl">{g.label}</span>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                    style={{transition:"transform 0.3s",transform:openGroup===g.key?"rotate(180deg)":"none"}}>
+                    <path d="M2 4.5L7 9.5L12 4.5" stroke="#BBB" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </button>
+                {openGroup===g.key && (
+                  <div style={{paddingBottom:16,animation:"fadeInUp 0.25s ease"}}>
+                    {g.items.map(item=>(
+                      item.hex !== null ? (
+                        <ColorRow key={item.name} c={item} />
+                      ) : (
+                        <div key={item.name} style={{display:"flex",alignItems:"center",gap:14,padding:"10px 0",borderBottom:"1px solid #ECEAE4"}}>
+                          <div style={{width:4,height:4,borderRadius:"50%",background:"#BBB",flexShrink:0,marginLeft:16}} />
+                          <span style={{fontSize:13,color:"#666"}}>{item.name}</span>
+                        </div>
+                      )
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* 3-column grid on desktop */
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:64}}>
+            <div>
+              <p className="sl" style={{marginBottom:24}}>Acrylfarben</p>
+              {COLORS_ACRYL.map(c=><ColorRow key={c.name} c={c} />)}
+            </div>
+            <div>
+              <p className="sl" style={{marginBottom:24}}>Pigmente</p>
+              {COLORS_PIGM.map(c=><ColorRow key={c.name} c={c} />)}
+              <p className="sl" style={{marginBottom:24,marginTop:40}}>Sprühfarben</p>
+              {COLORS_SPRAY.map(c=><ColorRow key={c.name} c={c} />)}
+            </div>
+            <div>
+              <p className="sl" style={{marginBottom:24}}>Material</p>
+              {MATERIALS.map(m=>(
+                <div key={m} style={{display:"flex",alignItems:"center",gap:14,padding:"10px 0",borderBottom:"1px solid #ECEAE4"}}>
+                  <div style={{width:4,height:4,borderRadius:"50%",background:"#BBB",flexShrink:0,marginLeft:16}} />
+                  <span style={{fontSize:13,color:"#666"}}>{m}</span>
+                </div>
+              ))}
+              <p className="sl" style={{marginBottom:16,marginTop:40}}>Gesamtpalette</p>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:4}}>
+                {allColors.map(c=>(
+                  <div key={c.name} title={c.name}
+                    style={{aspectRatio:"1",background:c.hex,borderRadius:3,border:"1px solid rgba(0,0,0,0.05)",
+                      transition:"transform 0.2s,box-shadow 0.2s",cursor:"default",position:"relative"}}
+                    onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.2)";e.currentTarget.style.boxShadow=`0 4px 12px ${c.hex}66`;e.currentTarget.style.zIndex="10"}}
+                    onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow="none";e.currentTarget.style.zIndex="1"}}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile: color mosaic */}
+        {mobile && (
+          <div>
+            <p className="sl" style={{marginBottom:12}}>Gesamtpalette</p>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:6}}>
+              {allColors.map(c=>(
+                <div key={c.name} title={c.name}
+                  style={{aspectRatio:"1",background:c.hex,borderRadius:4,border:"1px solid rgba(0,0,0,0.05)"}} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Process ───────────────────────────────────────────────────────────────────
+function Process() {
+  const mobile = useMobile();
+  const px = mobile ? "24px" : "64px";
+  return (
+    <section id="process" style={{padding: mobile ? "64px 0 80px" : "100px 0 140px",background:"#F2F0EA"}}>
+      <div style={{maxWidth: mobile ? "100%" : 900,margin:"0 auto",padding:`0 ${px}`}}>
+        <div style={{marginBottom:mobile?40:80}}>
+          <p className="sl" style={{marginBottom:16}}>Eine Reise</p>
+          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?30:44,fontWeight:300,color:"#1A1A18"}}>Entstehungsprozess</h2>
+          <p style={{fontSize:13,color:"#888",marginTop:12,lineHeight:1.7,maxWidth:440}}>
+            Über 13 Monate entstanden hunderte Schichten. Jede Phase hat das Bild grundlegend verändert.
+          </p>
+        </div>
+
+        {mobile ? (
+          /* Vertical list on mobile */
+          <div style={{display:"flex",flexDirection:"column",gap:36}}>
+            {PROCESS_STEPS.map((step,i)=>(
+              <div key={i} style={{display:"grid",gridTemplateColumns:"32px 1fr",gap:20,alignItems:"start"}}>
+                {/* Number column */}
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",paddingTop:4}}>
+                  <div style={{width:12,height:12,borderRadius:"50%",background:"#1A1A18",flexShrink:0,zIndex:1}} />
+                  {i < PROCESS_STEPS.length-1 && <div style={{width:1,flex:1,background:"#D8D4CC",marginTop:8,minHeight:40}} />}
+                </div>
+                {/* Content */}
+                <div style={{paddingBottom: i < PROCESS_STEPS.length-1 ? 0 : 0}}>
+                  <p className="sl" style={{marginBottom:6}}>{step.date}</p>
+                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:300,marginBottom:12}}>{step.label}</p>
+                  <div style={{overflow:"hidden",marginBottom:14,background:"#DDDBD4"}}>
+                    <img src={step.img} style={{width:"100%",aspectRatio:"4/3",objectFit:"cover",display:"block"}} />
+                  </div>
+                  <p style={{fontSize:12,color:"#888",lineHeight:1.7}}>{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Alternating timeline on desktop */
+          <div style={{position:"relative"}}>
+            <div style={{position:"absolute",left:"50%",top:0,bottom:0,width:1,background:"#D8D4CC",transform:"translateX(-50%)"}} />
+            {PROCESS_STEPS.map((step,i)=>{
+              const left = i%2===0;
+              return (
+                <div key={i} style={{display:"grid",gridTemplateColumns:"1fr 80px 1fr",marginBottom:i<PROCESS_STEPS.length-1?80:0,alignItems:"center"}}>
+                  <div style={{padding:"0 40px 0 0",textAlign:"right",visibility:left?"visible":"hidden"}}>
+                    {left && <>
+                      <div style={{overflow:"hidden",marginBottom:20,background:"#DDDBD4"}}>
+                        <img src={step.img} style={{width:"100%",aspectRatio:"4/3",objectFit:"cover",display:"block",transition:"transform 0.5s"}}
+                          onMouseEnter={e=>e.currentTarget.style.transform="scale(1.04)"}
+                          onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"} />
+                      </div>
+                      <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:300,marginBottom:6}}>{step.label}</p>
+                      <p className="sl" style={{marginBottom:8,display:"flex",justifyContent:"flex-end"}}>{step.date}</p>
+                      <p style={{fontSize:12,color:"#888",lineHeight:1.7}}>{step.desc}</p>
+                    </>}
+                  </div>
+                  <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+                    <div style={{width:14,height:14,borderRadius:"50%",background:"#1A1A18",border:"3px solid #F2F0EA",outline:"1px solid #1A1A18",zIndex:1,flexShrink:0}} />
+                  </div>
+                  <div style={{padding:"0 0 0 40px",visibility:left?"hidden":"visible"}}>
+                    {!left && <>
+                      <div style={{overflow:"hidden",marginBottom:20,background:"#DDDBD4"}}>
+                        <img src={step.img} style={{width:"100%",aspectRatio:"4/3",objectFit:"cover",display:"block",transition:"transform 0.5s"}}
+                          onMouseEnter={e=>e.currentTarget.style.transform="scale(1.04)"}
+                          onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"} />
+                      </div>
+                      <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:300,marginBottom:6}}>{step.label}</p>
+                      <p className="sl" style={{marginBottom:8}}>{step.date}</p>
+                      <p style={{fontSize:12,color:"#888",lineHeight:1.7}}>{step.desc}</p>
+                    </>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Über mich ─────────────────────────────────────────────────────────────────
+function UeberMich() {
+  const mobile = useMobile();
+  const px = mobile ? "24px" : "64px";
+  return (
+    <section id="ueber" style={{padding: mobile ? "64px 0 80px" : "100px 0 120px",background:"#F2F0EA"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:`0 ${px}`,
+        display:"grid",
+        gridTemplateColumns: mobile ? "1fr" : "1fr 1fr",
+        gap: mobile ? 32 : 80,
+        alignItems:"center"}}>
+        <div style={{overflow:"hidden",background:"#DDD9D0",position:"relative"}}>
+          <img src="uploads/PHOTO-2026-04-25-10-48-11.jpg"
+            style={{width:"100%",aspectRatio: mobile ? "4/3" : "4/5",objectFit:"cover",display:"block",filter:"grayscale(15%)"}} />
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(26,26,24,0.3) 0%,transparent 50%)"}} />
+        </div>
+        <div>
+          <p className="sl" style={{marginBottom:16}}>Über mich</p>
+          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?32:48,fontWeight:300,color:"#1A1A18",lineHeight:1.05,marginBottom:24}}>
+            Malerei als<br /><em>Gespräch mit mir selbst</em>
+          </h2>
+          <div style={{width:40,height:1,background:"#C8C4BC",marginBottom:24}} />
+          <p style={{fontSize:mobile?13:14,color:"#666",lineHeight:1.9,fontWeight:300,marginBottom:16}}>
+            Ich male seit Jahren — mit Acryl, Pigmenten, Sprühfarbe und allem, was die Oberfläche zum Leben erweckt. Meine Bilder entstehen nicht nach Plan. Sie wachsen.
+          </p>
+          <p style={{fontSize:mobile?13:14,color:"#666",lineHeight:1.9,fontWeight:300,marginBottom:16}}>
+            Schicht für Schicht, Sitzung für Sitzung. Was am Anfang Energie ist, wird irgendwann Stille. Dieses Gleichgewicht ist es, wonach ich suche — in jedem Werk neu.
+          </p>
+          <p style={{fontSize:mobile?13:14,color:"#666",lineHeight:1.9,fontWeight:300}}>
+            Ich arbeite in meinem Atelier und zeige meine Bilder auf Anfrage.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Kontakt ───────────────────────────────────────────────────────────────────
+function Kontakt() {
+  const mobile = useMobile();
+  const px = mobile ? "24px" : "64px";
+  return (
+    <section id="kontakt" style={{padding: mobile ? "56px 0 72px" : "80px 0 100px",background:"#FAFAF8",borderTop:"1px solid #ECEAE4"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:`0 ${px}`,
+        display:"flex",flexDirection: mobile ? "column" : "row",
+        justifyContent:"space-between",alignItems: mobile ? "flex-start" : "center",
+        gap: mobile ? 28 : 0}}>
+        <div>
+          <p className="sl" style={{marginBottom:14}}>Kontakt</p>
+          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?28:36,fontWeight:300,color:"#1A1A18",marginBottom:16}}>
+            Interesse? Ich freue mich.
+          </h2>
+          <p style={{fontSize:13,color:"#888",lineHeight:1.7}}>
+            Anfragen zu Werken, Ausstellungen oder Studio-Besuchen<br />
+            gerne per E-Mail.
+          </p>
+        </div>
+        <a href="mailto:mail@connyleibhammer.de"
+          style={{display:"inline-block",padding: mobile ? "14px 28px" : "16px 40px",
+            background:"#1A1A18",color:"#FFF",fontFamily:"'DM Sans',sans-serif",
+            fontSize:11,letterSpacing:3,textTransform:"uppercase",textDecoration:"none",
+            transition:"background 0.2s",flexShrink:0,alignSelf: mobile ? "flex-start" : "center"}}
+          onMouseEnter={e=>e.currentTarget.style.background="#333"}
+          onMouseLeave={e=>e.currentTarget.style.background="#1A1A18"}>
+          Nachricht schreiben
+        </a>
+      </div>
+    </section>
+  );
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+function Footer() {
+  const mobile = useMobile();
+  return (
+    <footer style={{background:"#EEECEA",padding: mobile ? "28px 24px" : "36px 64px",
+      display:"flex",flexDirection: mobile ? "column" : "row",
+      justifyContent:"space-between",alignItems: mobile ? "flex-start" : "center",
+      gap: mobile ? 8 : 0,
+      borderTop:"1px solid #D8D4CC"}}>
+      <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,letterSpacing:3,fontWeight:300,color:"#888"}}>CONNY LEIBHAMMER</p>
+      <p style={{fontSize:10,color:"#BBB",letterSpacing:2,textTransform:"uppercase"}}>Malerei · Acryl &amp; Mixed Media</p>
+    </footer>
+  );
+}
+
+// ── Work Detail ───────────────────────────────────────────────────────────────
+function WorkDetail({ onBack }) {
+  const mobile = useMobile();
+  const px = mobile ? "24px" : "64px";
+  return (
+    <>
+      <div style={{paddingTop: mobile ? 64 : 88,background:"#FAFAF8"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:`20px ${px} 0`}}>
+          <button onClick={onBack}
+            style={{display:"flex",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"'DM Sans',sans-serif"}}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8L10 13" stroke="#888" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"#888"}}>Zurück zu Werke</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Full painting hero */}
+      <div style={{background:"#EEECEA",position:"relative",overflow:"hidden"}}>
+        <img src="uploads/PHOTO-2026-04-25-10-54-08.jpg"
+          style={{width:"100%",maxHeight: mobile ? "70vw" : 680,objectFit:"cover",objectPosition:"center",display:"block"}} />
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(26,26,24,0.65) 0%,transparent 55%)"}} />
+        <div style={{position:"absolute",bottom:0,left:0,right:0,padding: mobile ? "24px" : "48px 64px",
+          display:"grid",
+          gridTemplateColumns: mobile ? "1fr" : "1fr 480px",
+          gap: mobile ? 16 : 64,
+          alignItems:"end"}}>
+          <div>
+            <p className="sl" style={{marginBottom:10,color:"rgba(255,255,255,0.55)"}}>№ 01 · 2025–2026</p>
+            <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?36:60,fontWeight:300,lineHeight:0.95,color:"#FFF"}}>
+              Energie und<br /><em>Entspannung</em>
+            </h1>
+          </div>
+          {!mobile && (
+            <div style={{paddingBottom:4}}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
+                {[["Format","100 × 140 cm, 4,5 cm Tiefe"],["Träger","Keilrahmen Henry XL"],["Technik","Acryl, Pigment, Mixed Media"],["Zeitraum","März 2025 – April 2026"]].map(([k,v])=>(
+                  <div key={k}>
+                    <p className="sl" style={{marginBottom:5,color:"rgba(255,255,255,0.4)"}}>{k}</p>
+                    <p style={{fontSize:13,color:"rgba(255,255,255,0.85)",lineHeight:1.5}}>{v}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile: specs below image */}
+      {mobile && (
+        <div style={{background:"#F2F0EA",padding:"24px 24px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
+            {[["Format","100 × 140 cm"],["Träger","Keilrahmen Henry XL"],["Technik","Acryl, Pigment, Mixed Media"],["Zeitraum","März 2025 – April 2026"]].map(([k,v])=>(
+              <div key={k}>
+                <p className="sl" style={{marginBottom:5}}>{k}</p>
+                <p style={{fontSize:12,color:"#555",lineHeight:1.5}}>{v}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <Explore />
+      <Palette />
+      <Process />
+    </>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [scrolled, setScrolled] = useState(false);
+  const [page, setPage] = useState("home");
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  const goToWork = () => { setPage("work"); window.scrollTo({top:0,behavior:"smooth"}); };
+  const goHome = () => {
+    setPage("home");
+    window.scrollTo({top:0,behavior:"smooth"});
+    setTimeout(() => {
+      const el = document.getElementById("werke");
+      if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top:y,behavior:"smooth"}); }
+    }, 100);
+  };
+
+  return (
+    <>
+      <Nav scrolled={scrolled} page={page} setPage={(p)=>{ setPage(p); window.scrollTo({top:0,behavior:"smooth"}); }} />
+      {page === "home" ? (
+        <>
+          <ArtistHero />
+          <Werke onSelectWork={goToWork} />
+          <UeberMich />
+          <Kontakt />
+          <Footer />
+        </>
+      ) : (
+        <>
+          <WorkDetail onBack={goHome} />
+          <Kontakt />
+          <Footer />
+        </>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
