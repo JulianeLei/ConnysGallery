@@ -82,19 +82,19 @@ function useMobile() {
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const HOTSPOTS = [
-  { id:"h1", x:72, y:18, label:"Neon-Explosion",  desc:"Zinoberorange und Neonmagenta treffen aufeinander — aufgesprüht und mit Brennspiritus verwischt. Diese Energie entstand in einer einzigen Sitzung.", detail:"uploads/PHOTO-2026-04-25-10-48-13 3.jpg", color:"#FF4500" },
+  { id:"h1", x:72, y:18, label:"Neon-Explosion",  desc:"Zinoberorange und Neonmagenta treffen aufeinander — aufgesprüht und mit Brennspiritus verwischt. Diese Energie entstand in einer einzigen Sitzung.", detail:"uploads/PHOTO-2026-04-25-10-48-10 3.jpg", color:"#FF4500" },
   { id:"h2", x:20, y:30, label:"Grüne Wildnis",   desc:"Nachtleuchtgrün und Gelbgrün bilden ein organisches Dickicht. Darunter liegt eine Schicht Marmormehl, die die Farbe aufreißt.", detail:"uploads/PHOTO-2026-04-25-10-48-13 2.jpg", color:"#39FF14" },
-  { id:"h3", x:50, y:62, label:"Tiefenstruktur",  desc:"Violett und Türkisblau bilden rechteckige Blöcke. Gips und Strukturpaste schaffen die reliefhafte Oberfläche darunter.", detail:"uploads/PHOTO-2026-04-25-10-48-13 4.jpg", color:"#8B00FF" },
+  { id:"h3", x:50, y:62, label:"Tiefenstruktur",  desc:"Violett und Türkisblau bilden rechteckige Blöcke. Gips und Strukturpaste schaffen die reliefhafte Oberfläche darunter.", detail:"uploads/PHOTO-2026-04-25-10-48-10 2.jpg", color:"#8B00FF" },
   { id:"h4", x:82, y:55, label:"Warme Glut",      desc:"Hier treffen Reflexrosa und Zinoberorange auf weiße Struktur. Die Farben wurden nass in nass übereinander gezogen.", detail:"uploads/PHOTO-2026-04-25-10-48-09.jpg", color:"#FF69B4" },
-  { id:"h5", x:38, y:40, label:"Weiße Stille",    desc:"Mischweiß und Elfenbein decken frühere Schichten ab. Darunter schlummert die gesamte Geschichte des Bildes — sichtbar in den Rissen.", detail:"uploads/PHOTO-2026-04-25-10-48-13 5.jpg", color:"#DDD8CC" },
+  { id:"h5", x:38, y:40, label:"Weiße Stille",    desc:"Mischweiß und Elfenbein decken frühere Schichten ab. Darunter schlummert die gesamte Geschichte des Bildes — sichtbar in den Rissen.", detail:"uploads/PHOTO-2026-04-25-10-48-11.jpg", color:"#DDD8CC" },
 ];
 
 const PROCESS_STEPS = [
   { img:"uploads/PHOTO-2026-04-25-10-48-10 3.jpg", label:"Erster Aufbau", date:"März 2025",          desc:"Auf dem bespannten Keilrahmen (Henry XL, 100 × 140 cm) entsteht die erste Struktur: Marmormehl, Gips und Strukturpaste werden aufgetragen. Die Leinwand bekommt ihr Relief." },
-  { img:"uploads/PHOTO-2026-04-25-10-48-10 2.jpg", label:"Erste Farbe",   date:"Frühjahr 2025",      desc:"Die ersten Acrylfarben brechen durch — Reflexrosa, Zinoberorange, Türkisblau. Farbdosen und Sprühfarben werden eingesetzt, um große Flächen zu setzen." },
-  { img:"uploads/PHOTO-2026-04-25-10-54-07.jpg",   label:"Energie",       date:"Sommer 2025",        desc:"Das Bild gewinnt Tiefe und Spannung. Neue Schichten werden aufgetragen, überarbeitet, zugedeckt. Neonmagenta und Gelbgrün treten in einen Dialog." },
-  { img:"uploads/PHOTO-2026-04-25-10-54-08 2.jpg", label:"Entspannung",   date:"Herbst/Winter 2025", desc:"Weiße Schichten legen sich über die Energie. Ein bewusstes Zurücktreten. Pastellfixativ versiegelt einzelne Zonen, Brennspiritus öffnet andere." },
-  { img:"uploads/PHOTO-2026-04-25-10-54-09.jpg",   label:"Vollendung",    date:"April 2026",         desc:"Nach über einem Jahr ist das Bild vollendet. Energie und Entspannung — zwei Kräfte, die im Gleichgewicht zueinander stehen." },
+  { img:"uploads/PHOTO-2026-04-25-10-54-08.jpg",   label:"Erste Farbe",   date:"Frühjahr 2025",      desc:"Die ersten Acrylfarben brechen durch — Reflexrosa, Zinoberorange, Türkisblau. Farbdosen und Sprühfarben werden eingesetzt, um große Flächen zu setzen." },
+  { img:"uploads/PHOTO-2026-04-25-10-54-32 2.jpg", label:"Energie",       date:"Sommer 2025",        desc:"Das Bild gewinnt Tiefe und Spannung. Neue Schichten werden aufgetragen, überarbeitet, zugedeckt. Neonmagenta und Gelbgrün treten in einen Dialog." },
+  { img:"uploads/PHOTO-2026-04-25-10-48-13 4.jpg", label:"Entspannung",   date:"Herbst/Winter 2025", desc:"Weiße Schichten legen sich über die Energie. Ein bewusstes Zurücktreten. Pastellfixativ versiegelt einzelne Zonen, Brennspiritus öffnet andere." },
+  { img:"uploads/PHOTO-2026-04-25-10-48-13 3.jpg", label:"Vollendung",    date:"April 2026",         desc:"Nach über einem Jahr ist das Bild vollendet. Energie und Entspannung — zwei Kräfte, die im Gleichgewicht zueinander stehen." },
 ];
 
 const COLORS_ACRYL = [
@@ -231,7 +231,7 @@ function Werke({ onSelectWork }) {
 
         <div style={{display:"grid",gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3,1fr)",gap:mobile?16:24}}>
           <div className="work-card" onClick={onSelectWork}>
-            <img src="uploads/PHOTO-2026-04-25-10-54-08.jpg" style={{aspectRatio:"3/4"}} />
+            <img src="uploads/generierteGallerie_Bild.png" style={{aspectRatio:"3/4"}} />
             <div className="card-overlay">
               <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?15:20,fontStyle:"italic",color:"#FFF",marginBottom:4}}>Energie und Entspannung</p>
               <p style={{fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.6)",textTransform:"uppercase"}}>2025–2026 · 100×140 cm</p>
@@ -296,7 +296,7 @@ function Explore() {
         <div style={{display:"grid",gridTemplateColumns: mobile ? "1fr" : "1fr 400px",gap:mobile?32:40,alignItems:"start"}}>
           {/* Painting */}
           <div style={{position:"relative",overflow:"hidden",background:"#DDDBD4"}}>
-            <img src="uploads/PHOTO-2026-04-25-10-54-08.jpg" style={{width:"100%",display:"block",objectFit:"cover"}} />
+            <img src="uploads/PHOTO-2026-04-25-10-48-13 3.jpg" style={{width:"100%",display:"block",objectFit:"cover"}} />
             <div style={{position:"absolute",inset:0,background:active?"rgba(0,0,0,0.18)":"transparent",transition:"background 0.4s",pointerEvents:"none"}} />
             {HOTSPOTS.map(h=>(
               <div key={h.id}
@@ -670,7 +670,7 @@ function WorkDetail({ onBack }) {
 
       {/* Full painting hero */}
       <div style={{background:"#EEECEA",position:"relative",overflow:"hidden"}}>
-        <img src="uploads/PHOTO-2026-04-25-10-54-08.jpg"
+        <img src="uploads/generierteGallerie_Bild.png"
           style={{width:"100%",maxHeight: mobile ? "70vw" : 680,objectFit:"cover",objectPosition:"center",display:"block"}} />
         <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(26,26,24,0.65) 0%,transparent 55%)"}} />
         <div style={{position:"absolute",bottom:0,left:0,right:0,padding: mobile ? "24px" : "48px 64px",
