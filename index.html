@@ -85,14 +85,14 @@ const HOTSPOTS = [
   { id:"h1", x:78, y:12, label:"Neon-Explosion",  desc:"Zinoberorange und Neonmagenta treffen aufeinander — aufgesprüht und mit Brennspiritus verwischt. Diese Energie entstand in einer einzigen Sitzung.", detail:"uploads/PHOTO-2026-04-25-10-48-10 3.jpg", color:"#FF4500" },
   { id:"h2", x:12, y:12, label:"Grüne Wildnis",   desc:"Nachtleuchtgrün und Gelbgrün bilden ein organisches Dickicht. Darunter liegt eine Schicht Marmormehl, die die Farbe aufreißt.", detail:"uploads/PHOTO-2026-04-25-10-48-13 2.jpg", color:"#39FF14" },
   { id:"h3", x:50, y:62, label:"Tiefenstruktur",  desc:"Violett und Türkisblau bilden rechteckige Blöcke. Gips und Strukturpaste schaffen die reliefhafte Oberfläche darunter.", detail:"uploads/PHOTO-2026-04-25-10-48-10 2.jpg", color:"#8B00FF" },
-  { id:"h4", x:85, y:48, label:"Warme Glut",      desc:"Hier treffen Reflexrosa und Zinoberorange auf weiße Struktur. Die Farben wurden nass in nass übereinander gezogen.", detail:"uploads/PHOTO-2026-04-25-10-48-09.jpg", color:"#FF69B4" },
-  { id:"h5", x:38, y:40, label:"Weiße Stille",    desc:"Mischweiß und Elfenbein decken frühere Schichten ab. Darunter schlummert die gesamte Geschichte des Bildes — sichtbar in den Rissen.", detail:"uploads/PHOTO-2026-04-25-10-48-11.jpg", color:"#DDD8CC" },
+  { id:"h4", x:90, y:80, label:"Warme Glut",      desc:"Die Farben wurden in mehreren Gängen aufgeschüttet. Es wurde kein Brennspiritus verwendet.", detail:"uploads/PHOTO-2026-04-25-10-48-09.jpg", color:"#FF69B4" },
+  { id:"h5", x:38, y:40, label:"Weiße Stille",    desc:"Reflexgelb und Elfenbein überlagern frühere Schichten. Das Marmormehl wurde nass mit dem Schaber aufgebracht — so entstanden die feinen Risse und die reliefhafte Oberfläche.", detail:"uploads/PHOTO-2026-04-25-10-48-11.jpg", color:"#DDD8CC" },
 ];
 
 const PROCESS_STEPS = [
-  { img:"uploads/PHOTO-2026-04-25-10-54-08.jpg",   label:"Erste Farbe",   date:"Frühjahr 2025",      desc:"Die ersten Acrylfarben brechen durch — Reflexrosa, Zinoberorange, Türkisblau. Farbdosen und Sprühfarben werden eingesetzt, um große Flächen zu setzen." },
+  { img:"uploads/PHOTO-2026-04-25-10-54-08.jpg",   label:"Erste Farbe",   date:"Frühjahr 2025",      desc:"Die ersten Acrylfarben wurden auf die Leinwand aufgetragen — Zinoberorange, Türkisblau, Reflexgelb. Große Flächen entstehen durch gezielten Farbauftrag." },
   { img:"uploads/PHOTO-2026-04-25-10-54-32 2.jpg", label:"Energie",       date:"Sommer 2025",        desc:"Das Bild gewinnt Tiefe und Spannung. Neue Schichten werden aufgetragen, überarbeitet, zugedeckt. Neonmagenta und Gelbgrün treten in einen Dialog." },
-  { img:"uploads/PHOTO-2026-04-25-10-48-13 4.jpg", label:"Entspannung",   date:"Herbst/Winter 2025", desc:"Weiße Schichten legen sich über die Energie. Ein bewusstes Zurücktreten. Pastellfixativ versiegelt einzelne Zonen, Brennspiritus öffnet andere." },
+  { img:"uploads/PHOTO-2026-04-25-10-48-13 4.jpg", label:"Neue Materialien", date:"Herbst/Winter 2025", desc:"Mehrere Schichten von Strukturpaste und Marmormehl werden aufgetragen. Durch diese Materialien entstehen interessante Reliefs, die dem Bild eine neue räumliche Tiefe geben." },
   { img:"uploads/PHOTO-2026-04-25-10-48-13 3.jpg", label:"Vollendung",    date:"April 2026",         desc:"Nach über einem Jahr ist das Bild vollendet. Tanz der Farben — ein Werk, das durch viele Schichten und Stimmungen gewachsen ist." },
 ];
 
@@ -103,7 +103,7 @@ const COLORS_ACRYL = [
   {name:"Zinoberorange",hex:"#FF4500"},{name:"Gelbgrün",hex:"#9ACD32"},{name:"Mint",hex:"#98FF98"},
   {name:"Primärrot",hex:"#FF0000"},{name:"Neonmagenta",hex:"#FF00FF"},{name:"Kohle",hex:"#36454F"},
 ];
-const COLORS_PIGM  = [{name:"Coelinblau",hex:"#6699CC"},{name:"Disziplin-Orange",hex:"#FF8C00"},{name:"Violett",hex:"#8B008B"}];
+const COLORS_PIGM  = [{name:"Coelinblau",hex:"#6699CC"},{name:"Diazo-Orange",hex:"#FF8C00"},{name:"Violett",hex:"#8B008B"}];
 const COLORS_SPRAY = [{name:"Gelb",hex:"#FFD700"},{name:"Silber",hex:"#C0C0C0"},{name:"Effekt",hex:"#E8E8E0"}];
 const MATERIALS    = ["Marmormehl","Strukturpaste","Gips","Acrylbinder","Pastellfixativ","Brennspiritus"];
 
@@ -181,7 +181,7 @@ function ArtistHero() {
         <div style={{position:"relative",overflow:"hidden",background:"#E8E4DC"}}>
           <img src="uploads/PHOTO-2026-04-25-10-54-32.jpg"
             style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 20%",display:"block"}} />
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 60%,#FAFAF8 100%)"}} />
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 78%,#FAFAF8 100%)"}} />
         </div>
       )}
       <div style={{padding: mobile ? "32px 24px 56px" : "80px 72px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
@@ -490,7 +490,7 @@ function Process() {
           <p className="sl" style={{marginBottom:16}}>Eine Reise</p>
           <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?30:44,fontWeight:300,color:"#1A1A18"}}>Entstehungsprozess</h2>
           <p style={{fontSize:13,color:"#888",marginTop:12,lineHeight:1.7,maxWidth:440}}>
-            Über 13 Monate entstanden hunderte Schichten. Jede Phase hat das Bild grundlegend verändert.
+            Über mehrere Monate entstanden viele Schichten. Jede Phase hat das Bild grundlegend verändert.
           </p>
         </div>
 
