@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Conny Leibhammer — Malerei</title>
+<title>Conny's Galerie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
@@ -82,19 +82,18 @@ function useMobile() {
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const HOTSPOTS = [
-  { id:"h1", x:72, y:18, label:"Neon-Explosion",  desc:"Zinoberorange und Neonmagenta treffen aufeinander — aufgesprüht und mit Brennspiritus verwischt. Diese Energie entstand in einer einzigen Sitzung.", detail:"uploads/PHOTO-2026-04-25-10-48-10 3.jpg", color:"#FF4500" },
-  { id:"h2", x:20, y:30, label:"Grüne Wildnis",   desc:"Nachtleuchtgrün und Gelbgrün bilden ein organisches Dickicht. Darunter liegt eine Schicht Marmormehl, die die Farbe aufreißt.", detail:"uploads/PHOTO-2026-04-25-10-48-13 2.jpg", color:"#39FF14" },
+  { id:"h1", x:78, y:12, label:"Neon-Explosion",  desc:"Zinoberorange und Neonmagenta treffen aufeinander — aufgesprüht und mit Brennspiritus verwischt. Diese Energie entstand in einer einzigen Sitzung.", detail:"uploads/PHOTO-2026-04-25-10-48-10 3.jpg", color:"#FF4500" },
+  { id:"h2", x:12, y:12, label:"Grüne Wildnis",   desc:"Nachtleuchtgrün und Gelbgrün bilden ein organisches Dickicht. Darunter liegt eine Schicht Marmormehl, die die Farbe aufreißt.", detail:"uploads/PHOTO-2026-04-25-10-48-13 2.jpg", color:"#39FF14" },
   { id:"h3", x:50, y:62, label:"Tiefenstruktur",  desc:"Violett und Türkisblau bilden rechteckige Blöcke. Gips und Strukturpaste schaffen die reliefhafte Oberfläche darunter.", detail:"uploads/PHOTO-2026-04-25-10-48-10 2.jpg", color:"#8B00FF" },
-  { id:"h4", x:82, y:55, label:"Warme Glut",      desc:"Hier treffen Reflexrosa und Zinoberorange auf weiße Struktur. Die Farben wurden nass in nass übereinander gezogen.", detail:"uploads/PHOTO-2026-04-25-10-48-09.jpg", color:"#FF69B4" },
+  { id:"h4", x:85, y:48, label:"Warme Glut",      desc:"Hier treffen Reflexrosa und Zinoberorange auf weiße Struktur. Die Farben wurden nass in nass übereinander gezogen.", detail:"uploads/PHOTO-2026-04-25-10-48-09.jpg", color:"#FF69B4" },
   { id:"h5", x:38, y:40, label:"Weiße Stille",    desc:"Mischweiß und Elfenbein decken frühere Schichten ab. Darunter schlummert die gesamte Geschichte des Bildes — sichtbar in den Rissen.", detail:"uploads/PHOTO-2026-04-25-10-48-11.jpg", color:"#DDD8CC" },
 ];
 
 const PROCESS_STEPS = [
-  { img:"uploads/PHOTO-2026-04-25-10-48-10 3.jpg", label:"Erster Aufbau", date:"März 2025",          desc:"Auf dem bespannten Keilrahmen (Henry XL, 100 × 140 cm) entsteht die erste Struktur: Marmormehl, Gips und Strukturpaste werden aufgetragen. Die Leinwand bekommt ihr Relief." },
   { img:"uploads/PHOTO-2026-04-25-10-54-08.jpg",   label:"Erste Farbe",   date:"Frühjahr 2025",      desc:"Die ersten Acrylfarben brechen durch — Reflexrosa, Zinoberorange, Türkisblau. Farbdosen und Sprühfarben werden eingesetzt, um große Flächen zu setzen." },
   { img:"uploads/PHOTO-2026-04-25-10-54-32 2.jpg", label:"Energie",       date:"Sommer 2025",        desc:"Das Bild gewinnt Tiefe und Spannung. Neue Schichten werden aufgetragen, überarbeitet, zugedeckt. Neonmagenta und Gelbgrün treten in einen Dialog." },
   { img:"uploads/PHOTO-2026-04-25-10-48-13 4.jpg", label:"Entspannung",   date:"Herbst/Winter 2025", desc:"Weiße Schichten legen sich über die Energie. Ein bewusstes Zurücktreten. Pastellfixativ versiegelt einzelne Zonen, Brennspiritus öffnet andere." },
-  { img:"uploads/PHOTO-2026-04-25-10-48-13 3.jpg", label:"Vollendung",    date:"April 2026",         desc:"Nach über einem Jahr ist das Bild vollendet. Energie und Entspannung — zwei Kräfte, die im Gleichgewicht zueinander stehen." },
+  { img:"uploads/PHOTO-2026-04-25-10-48-13 3.jpg", label:"Vollendung",    date:"April 2026",         desc:"Nach über einem Jahr ist das Bild vollendet. Tanz der Farben — ein Werk, das durch viele Schichten und Stimmungen gewachsen ist." },
 ];
 
 const COLORS_ACRYL = [
@@ -136,7 +135,7 @@ function Nav({ scrolled, page, setPage }) {
       }}>
         <button className="nav-link" onClick={goHome}
           style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?16:20,letterSpacing:4,fontWeight:300,color:"#1A1A18",textTransform:"none"}}>
-          CONNY LEIBHAMMER
+          Conny's Galerie
         </button>
 
         {mobile ? (
@@ -154,7 +153,6 @@ function Nav({ scrolled, page, setPage }) {
           <div style={{display:"flex",gap:44,alignItems:"center"}}>
             <button className={"nav-link"+(page==="home"?" active":"")} onClick={()=>{ setPage("home"); setTimeout(()=>scrollTo("werke"),50); }}>Werke</button>
             <button className="nav-link" onClick={()=>scrollTo("ueber")}>Über mich</button>
-            <button className="nav-link" onClick={()=>scrollTo("kontakt")}>Kontakt</button>
           </div>
         )}
       </nav>
@@ -163,7 +161,6 @@ function Nav({ scrolled, page, setPage }) {
       <div className={"mobile-menu"+(menuOpen?" open":"")}>
         <button className="nav-link" onClick={()=>{ goHome(); setTimeout(()=>scrollTo("werke"),50); }}>Werke</button>
         <button className="nav-link" onClick={()=>scrollTo("ueber")}>Über mich</button>
-        <button className="nav-link" onClick={()=>scrollTo("kontakt")}>Kontakt</button>
       </div>
     </>
   );
@@ -183,7 +180,7 @@ function ArtistHero() {
       {mobile && (
         <div style={{position:"relative",overflow:"hidden",background:"#E8E4DC"}}>
           <img src="uploads/PHOTO-2026-04-25-10-54-32.jpg"
-            style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top",display:"block"}} />
+            style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 20%",display:"block"}} />
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 60%,#FAFAF8 100%)"}} />
         </div>
       )}
@@ -233,7 +230,7 @@ function Werke({ onSelectWork }) {
           <div className="work-card" onClick={onSelectWork}>
             <img src="uploads/generierteGallerie_Bild.png" style={{aspectRatio:"3/4"}} />
             <div className="card-overlay">
-              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?15:20,fontStyle:"italic",color:"#FFF",marginBottom:4}}>Energie und Entspannung</p>
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?15:20,fontStyle:"italic",color:"#FFF",marginBottom:4}}>Tanz der Farben</p>
               <p style={{fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.6)",textTransform:"uppercase"}}>2025–2026 · 100×140 cm</p>
             </div>
           </div>
@@ -258,7 +255,7 @@ function Werke({ onSelectWork }) {
         </div>
 
         <div style={{marginTop:16}}>
-          <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?16:18,fontWeight:300,marginBottom:4}}>Energie und Entspannung</p>
+          <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?16:18,fontWeight:300,marginBottom:4}}>Tanz der Farben</p>
           <p style={{fontSize:11,color:"#AAA",letterSpacing:1}}>Acryl, Pigmente, Mixed Media · 2025–2026</p>
         </div>
       </div>
@@ -296,7 +293,7 @@ function Explore() {
         <div style={{display:"grid",gridTemplateColumns: mobile ? "1fr" : "1fr 400px",gap:mobile?32:40,alignItems:"start"}}>
           {/* Painting */}
           <div style={{position:"relative",overflow:"hidden",background:"#DDDBD4"}}>
-            <img src="uploads/PHOTO-2026-04-25-10-48-13 3.jpg" style={{width:"100%",display:"block",objectFit:"cover"}} />
+            <img src="uploads/Originalbild.jpg" style={{width:"100%",display:"block",objectFit:"cover"}} />
             <div style={{position:"absolute",inset:0,background:active?"rgba(0,0,0,0.18)":"transparent",transition:"background 0.4s",pointerEvents:"none"}} />
             {HOTSPOTS.map(h=>(
               <div key={h.id}
@@ -592,44 +589,7 @@ function UeberMich() {
           <p style={{fontSize:mobile?13:14,color:"#666",lineHeight:1.9,fontWeight:300,marginBottom:16}}>
             Schicht für Schicht, Sitzung für Sitzung. Was am Anfang Energie ist, wird irgendwann Stille. Dieses Gleichgewicht ist es, wonach ich suche — in jedem Werk neu.
           </p>
-          <p style={{fontSize:mobile?13:14,color:"#666",lineHeight:1.9,fontWeight:300}}>
-            Ich arbeite in meinem Atelier und zeige meine Bilder auf Anfrage.
-          </p>
         </div>
-      </div>
-    </section>
-  );
-}
-
-// ── Kontakt ───────────────────────────────────────────────────────────────────
-function Kontakt() {
-  const mobile = useMobile();
-  const px = mobile ? "24px" : "64px";
-  return (
-    <section id="kontakt" style={{padding: mobile ? "56px 0 72px" : "80px 0 100px",background:"#FAFAF8",borderTop:"1px solid #ECEAE4"}}>
-      <div style={{maxWidth:1280,margin:"0 auto",padding:`0 ${px}`,
-        display:"flex",flexDirection: mobile ? "column" : "row",
-        justifyContent:"space-between",alignItems: mobile ? "flex-start" : "center",
-        gap: mobile ? 28 : 0}}>
-        <div>
-          <p className="sl" style={{marginBottom:14}}>Kontakt</p>
-          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?28:36,fontWeight:300,color:"#1A1A18",marginBottom:16}}>
-            Interesse? Ich freue mich.
-          </h2>
-          <p style={{fontSize:13,color:"#888",lineHeight:1.7}}>
-            Anfragen zu Werken, Ausstellungen oder Studio-Besuchen<br />
-            gerne per E-Mail.
-          </p>
-        </div>
-        <a href="mailto:mail@connyleibhammer.de"
-          style={{display:"inline-block",padding: mobile ? "14px 28px" : "16px 40px",
-            background:"#1A1A18",color:"#FFF",fontFamily:"'DM Sans',sans-serif",
-            fontSize:11,letterSpacing:3,textTransform:"uppercase",textDecoration:"none",
-            transition:"background 0.2s",flexShrink:0,alignSelf: mobile ? "flex-start" : "center"}}
-          onMouseEnter={e=>e.currentTarget.style.background="#333"}
-          onMouseLeave={e=>e.currentTarget.style.background="#1A1A18"}>
-          Nachricht schreiben
-        </a>
       </div>
     </section>
   );
@@ -644,7 +604,7 @@ function Footer() {
       justifyContent:"space-between",alignItems: mobile ? "flex-start" : "center",
       gap: mobile ? 8 : 0,
       borderTop:"1px solid #D8D4CC"}}>
-      <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,letterSpacing:3,fontWeight:300,color:"#888"}}>CONNY LEIBHAMMER</p>
+      <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,letterSpacing:3,fontWeight:300,color:"#888"}}>Conny's Galerie</p>
       <p style={{fontSize:10,color:"#BBB",letterSpacing:2,textTransform:"uppercase"}}>Malerei · Acryl &amp; Mixed Media</p>
     </footer>
   );
@@ -656,18 +616,6 @@ function WorkDetail({ onBack }) {
   const px = mobile ? "24px" : "64px";
   return (
     <>
-      <div style={{paddingTop: mobile ? 64 : 88,background:"#FAFAF8"}}>
-        <div style={{maxWidth:1280,margin:"0 auto",padding:`20px ${px} 0`}}>
-          <button onClick={onBack}
-            style={{display:"flex",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"'DM Sans',sans-serif"}}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8L10 13" stroke="#888" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"#888"}}>Zurück zu Werke</span>
-          </button>
-        </div>
-      </div>
-
       {/* Full painting hero */}
       <div style={{background:"#EEECEA",position:"relative",overflow:"hidden"}}>
         <img src="uploads/generierteGallerie_Bild.png"
@@ -681,7 +629,7 @@ function WorkDetail({ onBack }) {
           <div>
             <p className="sl" style={{marginBottom:10,color:"rgba(255,255,255,0.55)"}}>№ 01 · 2025–2026</p>
             <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:mobile?36:60,fontWeight:300,lineHeight:0.95,color:"#FFF"}}>
-              Energie und<br /><em>Entspannung</em>
+              Tanz der<br /><em>Farben</em>
             </h1>
           </div>
           {!mobile && (
@@ -749,13 +697,11 @@ function App() {
           <ArtistHero />
           <Werke onSelectWork={goToWork} />
           <UeberMich />
-          <Kontakt />
           <Footer />
         </>
       ) : (
         <>
           <WorkDetail onBack={goHome} />
-          <Kontakt />
           <Footer />
         </>
       )}
